@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user-service")
 class UserWebApi(
     private val greeting: Greeting,
     private val userService: UserService,
     private val env: Environment
 ) {
 
-    @GetMapping("/user-service/health-check")
+    @GetMapping("/health-check")
     fun healthCheck(): String {
         return "It's working in user service on Port ${env.getProperty("local.server.port")}"
     }

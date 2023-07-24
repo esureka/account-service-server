@@ -4,8 +4,10 @@ import esperer.userservicekotlin.dto.UserDto
 import esperer.userservicekotlin.jpa.UserEntity
 import esperer.userservicekotlin.jpa.UserRepository
 import esperer.userservicekotlin.vo.RequestUser
+import esperer.userservicekotlin.vo.ResponseOrder
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -24,7 +26,8 @@ class UserServiceImpl(
             password = requestUser.password,
             userId = UUID.randomUUID().toString(),
             createdAt = LocalDateTime.now(),
-            encryptedPassword = passwordEncoder.encode(requestUser.password)
+            encryptedPassword = passwordEncoder.encode(requestUser.password),
+            responseOrders = ArrayList()
         )
 
         val mapper = ModelMapper()
@@ -33,5 +36,22 @@ class UserServiceImpl(
 
         userRepository.save(userEntity)
         return userDto
+    }
+
+    override fun getUserById(userId: String): UserDto {
+
+        val userEntity = userRepository.findByUserId(userId)
+            ?: throw UsernameNotFoundException("User not found")
+
+        val userDto = ModelMapper().map(userEntity, UserDto::class.java)
+
+        val orders = arrayListOf<ResponseOrder>()
+        userDto.responseOrders = orders
+
+        return userDto
+    }
+
+    override fun getAllUser(): Iterable<UserEntity> {
+        return userRepository.findAll()
     }
 }
