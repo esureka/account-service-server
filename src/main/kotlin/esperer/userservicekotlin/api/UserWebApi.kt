@@ -5,6 +5,7 @@ import esperer.userservicekotlin.vo.Greeting
 import esperer.userservicekotlin.vo.RequestUser
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
+import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/")
 class UserWebApi(
     private val greeting: Greeting,
-    private val userService: UserService
+    private val userService: UserService,
+    private val env: Environment
 ) {
 
-    @GetMapping("/health-check")
+    @GetMapping("/user-service/health-check")
     fun healthCheck(): String {
-        return "It's working in user service"
+        return "It's working in user service on Port ${env.getProperty("local.server.port")}"
     }
 
     @GetMapping("/welcome")
