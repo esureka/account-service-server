@@ -1,6 +1,5 @@
 package esperer.userservicekotlin.api
 
-import esperer.userservicekotlin.jpa.UserEntity
 import esperer.userservicekotlin.service.UserService
 import esperer.userservicekotlin.vo.Greeting
 import esperer.userservicekotlin.vo.RequestUser
