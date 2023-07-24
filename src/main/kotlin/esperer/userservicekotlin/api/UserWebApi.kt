@@ -1,8 +1,11 @@
 package esperer.userservicekotlin.api
 
+import esperer.userservicekotlin.jpa.UserEntity
 import esperer.userservicekotlin.service.UserService
 import esperer.userservicekotlin.vo.Greeting
 import esperer.userservicekotlin.vo.RequestUser
+import esperer.userservicekotlin.vo.ResponseUser
+import org.modelmapper.ModelMapper
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -34,5 +37,17 @@ class UserWebApi(
     fun createUser(@RequestBody requestUser: RequestUser): ResponseEntity<Void> {
         userService.createUser(requestUser)
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @GetMapping("/users")
+    fun getUsers(): ResponseEntity<List<ResponseUser>> {
+        val userList = userService.getAllUser()
+        val result = arrayListOf<ResponseUser>()
+
+        userList.forEach {
+            result.add(ModelMapper().map(it, ResponseUser::class.java))
+        }
+
+        return ResponseEntity.ok(result)
     }
 }
