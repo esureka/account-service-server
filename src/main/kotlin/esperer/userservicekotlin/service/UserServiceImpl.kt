@@ -6,13 +6,15 @@ import esperer.userservicekotlin.jpa.UserRepository
 import esperer.userservicekotlin.vo.RequestUser
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
 class UserServiceImpl(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder
 ) : UserService {
 
     override fun createUser(requestUser: RequestUser): UserDto {
@@ -22,7 +24,7 @@ class UserServiceImpl(
             password = requestUser.password,
             userId = UUID.randomUUID().toString(),
             createdAt = LocalDateTime.now(),
-            encryptedPassword = "encryptedPassword"
+            encryptedPassword = passwordEncoder.encode(requestUser.password)
         )
 
         val mapper = ModelMapper()
