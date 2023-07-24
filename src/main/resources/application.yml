@@ -5,6 +5,15 @@ spring:
     password: ${DB_PASSWORD:Esperer123!}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+
   application:
     name: user-service
 
