@@ -5,6 +5,8 @@ import esperer.userservicekotlin.vo.Greeting
 import esperer.userservicekotlin.vo.RequestUser
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -29,8 +31,8 @@ class UserWebApi(
     }
 
     @PostMapping("/users")
-    fun createUser(@RequestBody requestUser: RequestUser): String {
+    fun createUser(@RequestBody requestUser: RequestUser): ResponseEntity<Void> {
         userService.createUser(requestUser)
-        return "Create user method is called"
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
