@@ -7,6 +7,8 @@ import esperer.userservicekotlin.vo.RequestUser
 import esperer.userservicekotlin.vo.ResponseOrder
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -53,5 +55,12 @@ class UserServiceImpl(
 
     override fun getAllUser(): Iterable<UserEntity> {
         return userRepository.findAll()
+    }
+
+    override fun loadUserByUsername(username: String): UserDetails {
+        val user = userRepository.findByEmail(username) ?: throw UsernameNotFoundException(username)
+        return User(user.email, user.encryptedPassword,
+            true, true, true, true,
+            listOf())
     }
 }
