@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain
 class WebSecurity : WebSecurityConfigurerAdapter() {
 
     @Bean
-    protected fun configure(http: HttpSecurity): SecurityFilterChain {
+    override fun configure(http: HttpSecurity): SecurityFilterChain {
         http.csrf().disable()
         http.authorizeRequests().antMatchers("/users/**")
             .hasIpAddress("192.168.0.8")
