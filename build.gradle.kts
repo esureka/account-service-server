@@ -29,6 +29,11 @@ dependencies {
     implementation( "org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
     runtimeOnly("com.mysql:mysql-connector-j")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
