@@ -48,5 +48,6 @@ class AuthenticationFilter(
         authResult: Authentication,
     ) {
         val username = (authResult.principal as User).username
+        val userDetails = userService.getUserDetailsByEmail(username)
     }
 }
