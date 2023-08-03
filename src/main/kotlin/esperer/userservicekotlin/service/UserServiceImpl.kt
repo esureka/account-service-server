@@ -58,7 +58,8 @@ class UserServiceImpl(
     }
 
     override fun getUserDetailsByEmail(email: String): UserDto {
-        TODO("Not yet implemented")
+        val user = userRepository.findByEmail(email) ?: throw UsernameNotFoundException(email)
+        return ModelMapper().map(user, UserDto::class.java)
     }
 
     override fun loadUserByUsername(username: String): UserDetails {
