@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import esperer.userservicekotlin.vo.RequestLogin
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import java.io.IOException
 import java.lang.RuntimeException
@@ -30,8 +31,8 @@ class AuthenticationFilter : UsernamePasswordAuthenticationFilter() {
         request: HttpServletRequest?,
         response: HttpServletResponse?,
         chain: FilterChain?,
-        authResult: Authentication?,
+        authResult: Authentication,
     ) {
-
+        logger.debug((authResult.principal as User).username)
     }
 }
