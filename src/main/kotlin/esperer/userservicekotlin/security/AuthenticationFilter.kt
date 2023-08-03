@@ -1,7 +1,10 @@
 package esperer.userservicekotlin.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import esperer.userservicekotlin.service.UserService
 import esperer.userservicekotlin.vo.RequestLogin
+import org.springframework.core.env.Environment
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
@@ -12,7 +15,18 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class AuthenticationFilter : UsernamePasswordAuthenticationFilter() {
+class AuthenticationFilter(
+    private val userService: UserService,
+    private val env: Environment
+) : UsernamePasswordAuthenticationFilter() {
+
+
+    private lateinit var authenticationManager: AuthenticationManager
+
+    override fun afterPropertiesSet() {
+        super.afterPropertiesSet()
+        super.setAuthenticationManager(authenticationManager)
+    }
 
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         try {
@@ -33,6 +47,6 @@ class AuthenticationFilter : UsernamePasswordAuthenticationFilter() {
         chain: FilterChain?,
         authResult: Authentication,
     ) {
-        logger.debug((authResult.principal as User).username)
+        val username = (authResult.principal as User).username
     }
 }

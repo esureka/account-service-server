@@ -57,6 +57,10 @@ class UserServiceImpl(
         return userRepository.findAll()
     }
 
+    override fun getUserDetailsByEmail(email: String): UserDto {
+        TODO("Not yet implemented")
+    }
+
     override fun loadUserByUsername(username: String): UserDetails {
         val user = userRepository.findByEmail(username) ?: throw UsernameNotFoundException(username)
         return User(user.email, user.encryptedPassword,
