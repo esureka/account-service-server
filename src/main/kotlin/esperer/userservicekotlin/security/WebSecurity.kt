@@ -19,6 +19,7 @@ class WebSecurity(
     @Bean
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
+        http.authorizeRequests().antMatchers("/actuator/**").permitAll()
         http.authorizeRequests().antMatchers("/users/**")
             .hasIpAddress("192.168.0.8")
             .and()
