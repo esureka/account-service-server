@@ -7,18 +7,24 @@ import esperer.userservicekotlin.vo.RequestUser
 import esperer.userservicekotlin.vo.ResponseOrder
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.core.env.Environment
+import org.springframework.http.HttpMethod
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val restTemplate: RestTemplate,
+    private val env: Environment
 ) : UserService {
 
     override fun createUser(requestUser: RequestUser): UserDto {
@@ -47,8 +53,14 @@ class UserServiceImpl(
 
         val userDto = ModelMapper().map(userEntity, UserDto::class.java)
 
-        val orders = arrayListOf<ResponseOrder>()
-        userDto.responseOrders = orders
+        // val orders = arrayListOf<ResponseOrder>()
+        val orderUrl = String.format(env.getProperty("order_service.url")
+            ?: "http://localhost:8000/order-service/%s/orders", userId)
+
+        val ordersResponseBody = restTemplate.exchange(orderUrl,
+            HttpMethod.GET, null, object: ParameterizedTypeReference<List<ResponseOrder>>() {})
+
+        userDto.responseOrders = ordersResponseBody.body ?: arrayListOf()
 
         return userDto
     }
