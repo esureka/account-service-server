@@ -1,5 +1,6 @@
 package esperer.userservicekotlin.service
 
+import esperer.userservicekotlin.client.OrderServiceClient
 import esperer.userservicekotlin.dto.UserDto
 import esperer.userservicekotlin.jpa.UserEntity
 import esperer.userservicekotlin.jpa.UserRepository
@@ -24,7 +25,8 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val restTemplate: RestTemplate,
-    private val env: Environment
+    private val env: Environment,
+    private val orderServiceClient: OrderServiceClient
 ) : UserService {
 
     override fun createUser(requestUser: RequestUser): UserDto {
@@ -54,13 +56,16 @@ class UserServiceImpl(
         val userDto = ModelMapper().map(userEntity, UserDto::class.java)
 
         // val orders = arrayListOf<ResponseOrder>()
-        val orderUrl = String.format(env.getProperty("order_service.url")
-            ?: "http://localhost:8000/order-service/%s/orders", userId)
+//        val orderUrl = String.format(env.getProperty("order_service.url")
+//            ?: "http://localhost:8000/order-service/%s/orders", userId)
+//
+//        val ordersResponseBody = restTemplate.exchange(orderUrl,
+//            HttpMethod.GET, null, object: ParameterizedTypeReference<List<ResponseOrder>>() {})
+//
+//        userDto.responseOrders = ordersResponseBody.body ?: arrayListOf()
 
-        val ordersResponseBody = restTemplate.exchange(orderUrl,
-            HttpMethod.GET, null, object: ParameterizedTypeReference<List<ResponseOrder>>() {})
-
-        userDto.responseOrders = ordersResponseBody.body ?: arrayListOf()
+        val orders = orderServiceClient.getOrders(UUID.fromString(userId))
+        userDto.responseOrders = orders
 
         return userDto
     }
