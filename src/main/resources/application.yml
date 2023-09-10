@@ -40,7 +40,7 @@ greeting:
 
 logging:
   level:
-    esperer.userservicekotlin: DEBUG
+    esperer.userservicekotlin.client: DEBUG
 
 #token:
 #  expiration_time: 86400000

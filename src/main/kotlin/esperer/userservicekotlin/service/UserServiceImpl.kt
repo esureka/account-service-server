@@ -6,8 +6,10 @@ import esperer.userservicekotlin.jpa.UserEntity
 import esperer.userservicekotlin.jpa.UserRepository
 import esperer.userservicekotlin.vo.RequestUser
 import esperer.userservicekotlin.vo.ResponseOrder
+import feign.FeignException
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
+import org.slf4j.LoggerFactory
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpMethod
@@ -28,6 +30,8 @@ class UserServiceImpl(
     private val env: Environment,
     private val orderServiceClient: OrderServiceClient
 ) : UserService {
+
+    private val logger = LoggerFactory.getLogger("feign client")
 
     override fun createUser(requestUser: RequestUser): UserDto {
         val userDto = UserDto(
@@ -64,8 +68,15 @@ class UserServiceImpl(
 //
 //        userDto.responseOrders = ordersResponseBody.body ?: arrayListOf()
 
-        val orders = orderServiceClient.getOrders(UUID.fromString(userId))
-        userDto.responseOrders = orders
+        var orders: List<ResponseOrder>? = null
+
+        try {
+            orders = orderServiceClient.getOrders(UUID.fromString(userId))
+        } catch (e: FeignException) {
+            logger.info(e.message)
+        }
+
+        userDto.responseOrders = orders ?: arrayListOf()
 
         return userDto
     }
